@@ -1,11 +1,11 @@
 SHELL := /bin/bash
-WORK_DIR ?= $(shell basename $(PWD) | awk '{print tolower($$0)}')
+PROJECT_NAME ?= $(shell git config --local remote.origin.url | sed -n 's\#.*/\([^.]*\)\.git\#\1\#p' | awk '{print tolower($$0)}')
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD | awk '{print tolower($$0)}')
 GIT_HASH ?= $(shell git rev-parse --short HEAD | awk '{print tolower($$0)}')
 
 # compose lowercase container tag and full name
 CONTAINER_TAG ?= $(shell echo "$(GIT_BRANCH)-$(GIT_HASH)")
-CONTAINER_NAME ?= $(shell echo "$(WORK_DIR):$(CONTAINER_TAG)")
+CONTAINER_NAME ?= $(shell echo "$(PROJECT_NAME):$(CONTAINER_TAG)")
 
 .PHONY : help
 help :

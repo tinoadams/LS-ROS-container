@@ -30,6 +30,19 @@ Pre-built container versions available here:
 
 https://hub.docker.com/r/tadams/ls-ros-container
 
+Docker tags
+---
+
+Containers are named according to the project name `ls-ros-container` and tagged based on the
+git branch name and git hash.
+
+The `Makefile` targets will automatically name containers using this scheme:
+
+`ls-ros-container:noetic-dev-env-nvidia-430-0dda930`.
+- Project `ls-ros-container`
+- Branch `noetic-dev-env-nvidia-430`
+- Commit hash `0dda930`
+
 Build, test/run and publish
 ---
 
