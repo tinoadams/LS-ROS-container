@@ -33,4 +33,4 @@ run: ## Run container for manual testing, optional "make run RUN='MYCONTAINER:TA
 publish:
 	@[ -z "`git status --porcelain`" ] || (echo "Unable to publish with modified files in project"; exit 1)
 	git tag -a $(CONTAINER_TAG) -m "Publishing container for build"
-	# git push origin "$(CONTAINER_TAG)"
+	git push origin "$(CONTAINER_TAG)"
