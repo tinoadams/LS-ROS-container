@@ -10,7 +10,7 @@ CONTAINER_NAME ?= $(shell echo "$(WORK_DIR):$(CONTAINER_TAG)")
 .PHONY : help
 help :
 	@echo "Usage 'make [TARGET]', see list of targets below:"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 build: ## Build and tag container
 	docker build \
@@ -30,7 +30,7 @@ run: ## Run container for manual testing, optional "make run RUN='MYCONTAINER:TA
 		--env="DISPLAY=$(DISPLAY)" --env='QT_X11_NO_MITSHM=1' --gpus all \
 		"$(RUN)"
 
-publish:
+publish: ## Tag the current commit and push to origin in order for CI to build the image
 	@[ -z "`git status --porcelain`" ] || (echo "Unable to publish with modified files in project"; exit 1)
 	git tag -a $(CONTAINER_TAG) -m "Publishing container for build"
 	git push origin "$(CONTAINER_TAG)"
