@@ -33,24 +33,10 @@ RUN wget https://github.com/git-lfs/git-lfs/releases/download/v2.7.2/git-lfs-lin
     rm -rf git-lfs-linux-amd64-v2.7.2.tar.gz
 
 # FLIR camera drivers
-    # nasty hack to get rid of license prompt... i've contacted FLIR for advice
 RUN wget https://github.com/tinoadams/LS-ROS-container/releases/download/v1/spinnaker-2.0.0.146-amd64-pkg.tar.gz && \
     tar xzf spinnaker-2.0.0.146-amd64-pkg.tar.gz && \
     cd spinnaker-2.0.0.146-amd64/ && \
-    mkdir -p temp1/temp2 && \
-    cd temp1 && \
-    cp ../libspinnaker_2.0.0.146_amd64.deb ./ && \
-    ar x ./libspinnaker_2.0.0.146_amd64.deb && \
-    cd temp2 && \
-    tar xf ../control.tar.xz && \
-    echo '#!/bin/sh' > preinst && \
-    sed -i 's/exit 0//g' postinst && \
-    tar czf ../control.tar.gz * && \
-    cd .. && \
-    rm libspinnaker_2.0.0.146_amd64.deb && \
-    ar r libspinnaker_2.0.0.146_amd64.deb debian-binary control.tar.gz data.tar.xz && \
-    cp libspinnaker_2.0.0.146_amd64.deb ../ && \
-    cd .. && \
+    echo libspinnaker libspinnaker/accepted-flir-eula select true | debconf-set-selections && \
     dpkg -i libspinnaker_*.deb && \
     dpkg -i libspinnaker-dev_*.deb && \
     dpkg -i libspinnaker-c_*.deb && \
