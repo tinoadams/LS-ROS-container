@@ -32,39 +32,9 @@ RUN wget https://github.com/git-lfs/git-lfs/releases/download/v2.7.2/git-lfs-lin
     git lfs install && \
     rm -rf git-lfs-linux-amd64-v2.7.2.tar.gz
 
-# simulation dependencies
-RUN apt-get install -d ros-$ROS_DISTRO-controller-manager-tests && \
-    dpkg -i --force-overwrite /var/cache/apt/archives/ros-$ROS_DISTRO-controller-manager-tests_*_amd64.deb
-RUN pip3 install paho-mqtt pytz requests PySide2
-
-# ROS Gazebo and simulation nodes
-RUN apt-get install -y ros-$ROS_DISTRO-gazebo* ros-$ROS_DISTRO-effort-controllers ros-$ROS_DISTRO-joint-state* ros-$ROS_DISTRO-control*
-RUN apt-get install -y python3-tk
-
-# nvidia-container-runtime
-ENV NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
-ENV NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
-# !!! Must match nvidia driver version on the docker host !!!
-RUN add-apt-repository -y ppa:graphics-drivers/ppa && \
-    apt update && \
-    DEBIAN_FRONTEND=noninteractive apt install -y nvidia-driver-430
-
-# Create user for VSCode
-ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /bin/bash \
-    && adduser $USERNAME dialout \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME \
-    && echo "Set disable_coredump false" >> /etc/sudo.conf
-USER $USERNAME
-
 # FLIR camera drivers
     # nasty hack to get rid of license prompt... i've contacted FLIR for advice
-RUN cd /tmp && \
-    wget https://github.com/tinoadams/LS-ROS-container/releases/download/v1/spinnaker-2.0.0.146-amd64-pkg.tar.gz && \
+RUN wget https://github.com/tinoadams/LS-ROS-container/releases/download/v1/spinnaker-2.0.0.146-amd64-pkg.tar.gz && \
     tar xzf spinnaker-2.0.0.146-amd64-pkg.tar.gz && \
     cd spinnaker-2.0.0.146-amd64/ && \
     mkdir -p temp1/temp2 && \
@@ -81,23 +51,53 @@ RUN cd /tmp && \
     ar r libspinnaker_2.0.0.146_amd64.deb debian-binary control.tar.gz data.tar.xz && \
     cp libspinnaker_2.0.0.146_amd64.deb ../ && \
     cd .. && \
-    sudo dpkg -i libspinnaker_*.deb && \
-    sudo dpkg -i libspinnaker-dev_*.deb && \
-    sudo dpkg -i libspinnaker-c_*.deb && \
-    sudo dpkg -i libspinnaker-c-dev_*.deb && \
-    sudo dpkg -i libspinvideo_*.deb && \
-    sudo dpkg -i libspinvideo-dev_*.deb && \
-    sudo dpkg -i libspinvideo-c_*.deb && \
-    sudo dpkg -i libspinvideo-c-dev_*.deb && \
-    sudo dpkg -i spinview-qt_*.deb && \
-    sudo dpkg -i spinview-qt-dev_*.deb && \
-    sudo dpkg -i spinupdate_*.deb && \
-    sudo dpkg -i spinupdate-dev_*.deb && \
-    sudo dpkg -i spinnaker_*.deb && \
-    sudo dpkg -i spinnaker-doc_*.deb && \
-    sudo apt-get -f install -y && \
+    dpkg -i libspinnaker_*.deb && \
+    dpkg -i libspinnaker-dev_*.deb && \
+    dpkg -i libspinnaker-c_*.deb && \
+    dpkg -i libspinnaker-c-dev_*.deb && \
+    dpkg -i libspinvideo_*.deb && \
+    dpkg -i libspinvideo-dev_*.deb && \
+    dpkg -i libspinvideo-c_*.deb && \
+    dpkg -i libspinvideo-c-dev_*.deb && \
+    dpkg -i spinview-qt_*.deb && \
+    dpkg -i spinview-qt-dev_*.deb && \
+    dpkg -i spinupdate_*.deb && \
+    dpkg -i spinupdate-dev_*.deb && \
+    dpkg -i spinnaker_*.deb && \
+    dpkg -i spinnaker-doc_*.deb && \
+    apt-get -f install -y && \
     cd .. && \
     rm -rf spinnaker-2.0.0.146-amd64 spinnaker-2.0.0.146-amd64-pkg.tar.gz
+
+# simulation dependencies
+RUN apt-get install -d ros-$ROS_DISTRO-controller-manager-tests && \
+    dpkg -i --force-overwrite /var/cache/apt/archives/ros-$ROS_DISTRO-controller-manager-tests_*_amd64.deb
+RUN pip3 install paho-mqtt pytz requests PySide2
+
+# ROS Gazebo and simulation nodes
+RUN apt-get install -y ros-$ROS_DISTRO-gazebo* ros-$ROS_DISTRO-effort-controllers ros-$ROS_DISTRO-joint-state* ros-$ROS_DISTRO-control*
+RUN apt-get install -y python3-tk
+
+# nvidia-container-runtime
+ENV NIVIDIA_PACKAGE=nvidia-driver-430
+ENV NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+ENV NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:+$NVIDIA_DRIVER_CAPABILITIES,}graphics
+# !!! Must match nvidia driver version on the docker host !!!
+RUN add-apt-repository -y ppa:graphics-drivers/ppa && \
+    apt update && \
+    DEBIAN_FRONTEND=noninteractive apt install -y ${NIVIDIA_PACKAGE}
+
+# Create user for VSCode
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+RUN groupadd --gid $USER_GID $USERNAME \
+    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -s /bin/bash \
+    && adduser $USERNAME dialout \
+    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
+    && chmod 0440 /etc/sudoers.d/$USERNAME \
+    && echo "Set disable_coredump false" >> /etc/sudo.conf
+USER $USERNAME
 
 # dev tools
 RUN pip3 install pylint autopep8
