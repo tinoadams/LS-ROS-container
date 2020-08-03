@@ -19,6 +19,7 @@ build: ## Build and tag container
 
 run: RUN := $(or $(RUN),$(CONTAINER_NAME))
 run: ## Run container for manual testing, optional "make run RUN='MYCONTAINER:TAG'"
+	@[ "1000" == "`id -u`" ] || (echo "User ID on the host should match VSCode user id inside container"; exit 1)
 	docker run -ti -a STDOUT -a STDERR \
 		--mount type=bind,"source=$(PWD)","target=/workspace" \
 		--mount source=/dev,target=/dev,type=bind \
