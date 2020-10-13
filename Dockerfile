@@ -72,7 +72,7 @@ RUN wget https://github.com/PointCloudLibrary/pcl/archive/pcl-1.8.1.tar.gz && \
     mkdir build && \
     cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/ .. && \
-    make -j8 && \
+    make && \
     make install && \
     cd ../.. && \
     rm -f xvf pcl-1.8.1.tar.gz
