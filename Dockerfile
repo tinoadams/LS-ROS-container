@@ -22,7 +22,6 @@ FROM osrf/ros:kinetic-desktop-full-xenial
 RUN apt-get update
 RUN apt-get install -y  \
         git \
-        git-lfs \
         libeigen3-dev \
         libflann-dev \
         libsystemd-dev \
@@ -68,14 +67,14 @@ RUN apt-get install -y  \
     python-tk
 
 RUN wget https://github.com/PointCloudLibrary/pcl/archive/pcl-1.8.1.tar.gz && \
-    tar xvf pcl-1.8.1.tar.gz \
+    tar xvf pcl-1.8.1.tar.gz && \
     cd pcl-pcl-1.8.1 && \
     mkdir build && \
     cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/ .. && \
     make -j8 && \
     make install && \
-    cd .. && \
+    cd ../.. && \
     rm -f xvf pcl-1.8.1.tar.gz
 
 RUN pip2 install paho_mqtt requests paho-mqtt pathlib  pyOpenSSL cryptography rfc3339 PyJWT
