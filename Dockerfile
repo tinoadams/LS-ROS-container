@@ -124,6 +124,7 @@ USER $USERNAME
 RUN pip install --upgrade pip
 RUN pip install -U pylint autopep8
 RUN sudo pip install vcstool
+RUN pip3 install -U pylint autopep8
 
 RUN echo 'alias ll="ls -la"' >> /home/vscode/.bashrc
 # VSCode container overrides entrypoint so we load it when the shell starts
