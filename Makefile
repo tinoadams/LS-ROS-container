@@ -35,3 +35,7 @@ release: ## Tag the current commit and push to origin in order for CI to build t
 	@[ -z "`git status --porcelain`" ] || (echo "Unable to publish with modified files in project"; exit 1)
 	git tag -a $(CONTAINER_TAG) -m "Publishing container for build"
 	git push origin "$(CONTAINER_TAG)"
+
+deploy: ## Manually deploy docker image to the registry
+	docker tag $(CONTAINER_NAME) tadams/$(CONTAINER_NAME)
+	docker push tadams/$(CONTAINER_NAME) || echo "Run 'docker login' to authenticate at registry!!!"
