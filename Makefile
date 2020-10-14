@@ -31,11 +31,13 @@ run: ## Run container for manual testing, optional "make run RUN='MYCONTAINER:TA
 		--env="DISPLAY=$(DISPLAY)" --env='QT_X11_NO_MITSHM=1' --gpus all \
 		"$(RUN)"
 
-release: ## Tag the current commit and push to origin in order for CI to build the image
-	@[ -z "`git status --porcelain`" ] || (echo "Unable to publish with modified files in project"; exit 1)
+ensure_clean:
+	@if [ ! -z "`git status --porcelain`" ]; then echo "Unable to relase/deploy with modified files in project"; exit 1; fi
+
+release: ensure_clean ## Tag the current commit and push to origin in order for CI to build the image
 	git tag -a $(CONTAINER_TAG) -m "Publishing container for build"
 	git push origin "$(CONTAINER_TAG)"
 
-deploy: ## Manually deploy docker image to the registry
+deploy: ensure_clean ## Manually deploy docker image to the registry
 	docker tag $(CONTAINER_NAME) tadams/$(CONTAINER_NAME)
 	docker push tadams/$(CONTAINER_NAME) || echo "Run 'docker login' to authenticate at registry!!!"
