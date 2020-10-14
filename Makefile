@@ -41,3 +41,4 @@ release: ensure_clean ## Tag the current commit and push to origin in order for 
 deploy: ensure_clean ## Manually deploy docker image to the registry
 	docker tag $(CONTAINER_NAME) tadams/$(CONTAINER_NAME)
 	docker push tadams/$(CONTAINER_NAME) || echo "Run 'docker login' to authenticate at registry!!!"
+	@echo "Container ready 'tadams/$(CONTAINER_NAME)'"
