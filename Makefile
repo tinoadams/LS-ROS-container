@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-PROJECT_NAME ?= $(shell git config --local remote.origin.url | sed -n 's\#.*/\([^.]*\)\.git\#\1\#p' | awk '{print tolower($$0)}')
+PROJECT_NAME ?= ls-ros-container
 GIT_BRANCH ?= $(shell git rev-parse --abbrev-ref HEAD | awk '{print tolower($$0)}')
 GIT_HASH ?= $(shell git rev-parse --short HEAD | awk '{print tolower($$0)}')
 
@@ -31,7 +31,7 @@ run: ## Run container for manual testing, optional "make run RUN='MYCONTAINER:TA
 		--env="DISPLAY=$(DISPLAY)" --env='QT_X11_NO_MITSHM=1' --gpus all \
 		"$(RUN)"
 
-publish: ## Tag the current commit and push to origin in order for CI to build the image
+release: ## Tag the current commit and push to origin in order for CI to build the image
 	@[ -z "`git status --porcelain`" ] || (echo "Unable to publish with modified files in project"; exit 1)
 	git tag -a $(CONTAINER_TAG) -m "Publishing container for build"
 	git push origin "$(CONTAINER_TAG)"

@@ -72,7 +72,7 @@ RUN wget https://github.com/PointCloudLibrary/pcl/archive/pcl-1.8.1.tar.gz && \
     mkdir build && \
     cd build && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=/usr/local/ .. && \
-    make && \
+    make -j8 && \
     make install && \
     cd ../.. && \
     rm -f xvf pcl-1.8.1.tar.gz
@@ -123,6 +123,7 @@ USER $USERNAME
 
 RUN pip install --upgrade pip
 RUN pip install -U pylint autopep8
+RUN sudo pip install vcstool
 
 RUN echo 'alias ll="ls -la"' >> /home/vscode/.bashrc
 # VSCode container overrides entrypoint so we load it when the shell starts
