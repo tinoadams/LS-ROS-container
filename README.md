@@ -23,6 +23,21 @@ Known limitations
 - NVidia driver version must match the hosts NVidia driver version (at least roughly)
 - User on host must have be ID `1000` ie. check by running the following on your shell: ``[ $UID == 1000 ] && echo "Good" || echo "Bad"``
 
+Run example
+---
+
+```
+docker run -ti --rm -a STDOUT -a STDERR \
+    --mount type=bind,"source=${PWD}","target=${PWD}" --workdir "${PWD}" \
+    --mount source=/dev,target=/dev,type=bind \
+    --mount source=${HOME}/.ssh,target=/home/vscode/.ssh,type=bind,readonly \
+    --mount source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind \
+    -l vsch.quality=stable -l vsch.remote.devPort=0 -l vsch.local.folder="${PWD}" \
+    --privileged --cap-add=SYS_PTRACE --security-opt seccomp=unconfined \
+    --env="DISPLAY=${DISPLAY}" --env='QT_X11_NO_MITSHM=1' --gpus=all \
+    tadams/ls-ros-container:kinect-dev-env-nvidia-430-094f6ca
+```
+
 Docker hub
 ---
 
