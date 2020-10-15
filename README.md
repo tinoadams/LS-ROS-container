@@ -53,5 +53,5 @@ Usual workflow:
 ```
 make build
 make run
-make publish
+make deploy
 ```
