@@ -110,6 +110,20 @@ RUN add-apt-repository -y ppa:graphics-drivers/ppa && apt update
 # must be the same nvidia driver version as the docker host!!!
 RUN DEBIAN_FRONTEND=noninteractive apt install -y nvidia-430
 
+RUN apt-get install -y apt-transport-https ca-certificates less
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/cuda-ubuntu1604.pin && \
+    mv cuda-ubuntu1604.pin /etc/apt/preferences.d/cuda-repository-pin-600  && \
+    apt-key adv --fetch-keys http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/7fa2af80.pub && \
+    echo "deb https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1604/x86_64/ /" | sudo tee -a /etc/apt/sources.list.d/cuda.list  && \
+    apt-get update && \
+    apt-get install -y cuda-compiler-9-2 cuda-libraries-dev-9-2 libcuda1-430
+
+RUN wget https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64/libcudnn7_7.3.1.20-1+cuda9.2_amd64.deb && \
+    dpkg -i libcudnn7_7.3.1.20-1+cuda9.2_amd64.deb && \
+    wget https://developer.download.nvidia.com/compute/machine-learning/repos/ubuntu1604/x86_64/libcudnn7-dev_7.3.1.20-1+cuda9.2_amd64.deb && \
+    dpkg -i libcudnn7-dev_7.3.1.20-1+cuda9.2_amd64.deb && \
+    rm -f libcudnn7_7.3.1.20-1+cuda9.2_amd64.deb libcudnn7-dev_7.3.1.20-1+cuda9.2_amd64.deb
+
 # Create user for VSCode
 ARG USERNAME=vscode
 ARG USER_UID=1000
