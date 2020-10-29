@@ -140,6 +140,8 @@ RUN pip install -U pylint autopep8
 RUN sudo pip install vcstool
 RUN pip3 install -U pylint autopep8
 
+RUN sudo apt-get install -y devscripts equivs
+
 RUN echo 'alias ll="ls -la"' >> /home/vscode/.bashrc
 # VSCode container overrides entrypoint so we load it when the shell starts
 RUN echo 'source "/opt/ros/$ROS_DISTRO/setup.bash"' >> /home/vscode/.bashrc
