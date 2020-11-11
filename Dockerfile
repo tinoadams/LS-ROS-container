@@ -142,6 +142,7 @@ RUN pip3 install -U pylint autopep8
 
 # superd packaging deps
 RUN sudo apt-get install -y devscripts equivs dh-virtualenv gobject-introspection libdbus-1-dev libdbus-glib-1-dev libffi-dev libgirepository1.0-dev python-mako python-markupsafe python3-virtualenv virtualenv
+RUN sudo apt-get install -y dh-systemd
 
 RUN echo 'alias ll="ls -la"' >> /home/vscode/.bashrc
 # VSCode container overrides entrypoint so we load it when the shell starts
